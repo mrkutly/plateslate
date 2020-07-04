@@ -7,7 +7,7 @@ defmodule PlateSlate.Menu do
   import Ecto.Query, warn: false
   alias PlateSlate.Repo
 
-  alias PlateSlate.Menu.Category
+  alias PlateSlate.Menu.{Category, Item}
 
   @doc """
   Returns the list of categories.
@@ -197,5 +197,81 @@ defmodule PlateSlate.Menu do
   """
   def change_item(%Item{} = item) do
     Item.changeset(item, %{})
+  end
+
+  @doc """
+  Returns a list of all items filtered by a name parameter and ordered by an order parameter.
+  If no name paramter is given, returns all items.
+  If no order paramter is given, defaults to ascending order.
+
+  ## Examples
+
+      iex> list_items(%{name: "reuben"})
+      [%Item{name: "Reuben", id: 1}]
+
+      iex> list_items(%{})
+      [%Item{name: "Reuben", id: 1}, %Item{name: "Cubana", id: 2}]
+
+  """
+  def list_items(filters) do
+    filters
+    |> Enum.reduce(Item, fn
+      {_, nil}, query ->
+        query
+
+      {:order, order}, query ->
+        query |> order_by({^order, :name})
+
+      {:filter, filter}, query ->
+        query |> filter_with(filter)
+    end)
+    |> Repo.all
+  end
+
+  defp filter_with(query, filter) do
+    Enum.reduce(filter, query, fn
+      {:added_after, date}, query ->
+        from q in query, where: q.added_on >= ^date
+
+      {:added_before, date}, query ->
+        from q in query, where: q.added_on <= ^date
+
+      {:category, category_name}, query ->
+        from q in query,
+          join: c in assoc(q, :category),
+          where: ilike(c.name, ^"%#{category_name}%")
+
+      {:name, name}, query ->
+        from q in query, where: ilike(q.name, ^"%#{name}%")
+
+      {:priced_above, price}, query ->
+        from q in query, where: q.price >= ^price
+
+      {:priced_below, price}, query ->
+        from q in query, where: q.price <= ^price
+
+      {:priced_below, price}, query ->
+        from q in query, where: q.price <= ^price
+
+      {:tag, tag_name}, query ->
+        from q in query,
+          join: t in assoc(q, :tags),
+          where: ilike(t.name, ^"%#{tag_name}%")
+    end)
+  end
+
+  def list_categories(args) do
+    args
+    |> Enum.reduce(Category, fn
+      {_, nil}, query ->
+        query
+
+      {:order, order}, query ->
+        query |> order_by({^order, :name})
+
+      {:matcher, name}, query ->
+        from q in query, where: ilike(q.name, ^"%#{name}%")
+    end)
+    |> Repo.all
   end
 end
