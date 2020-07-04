@@ -1,15 +1,13 @@
-
 defmodule PlateSlate.Menu.ItemTag do
   use Ecto.Schema
   import Ecto.Changeset
   alias PlateSlate.Menu.ItemTag
 
-
   schema "item_tags" do
-    field :description
-    field :name, :string, null: false
+    field(:description)
+    field(:name, :string, null: false)
 
-    many_to_many :items, PlateSlate.Menu.Item, join_through: "items_taggings"
+    many_to_many(:items, PlateSlate.Menu.Item, join_through: "items_taggings")
 
     timestamps()
   end

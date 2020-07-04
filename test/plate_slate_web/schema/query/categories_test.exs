@@ -1,4 +1,4 @@
-defmodule PlateSlateWeb.Schema.Query.MenuItemsTest do
+defmodule PlateSlateWeb.Schema.Query.CategoriesTest do
   use PlateSlateWeb.ConnCase, async: true
   alias PlateSlate.{Repo, Menu.Item, Menu.Category}
 
@@ -6,7 +6,7 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemsTest do
     PlateSlate.Seeds.run()
   end
 
-  @query"""
+  @query """
   {
     categories {
       name
@@ -16,18 +16,19 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemsTest do
   test "categories field returns all categories" do
     conn = build_conn()
     conn = get(conn, "/api", query: @query)
-    assert json_response(conn, 200) ==  %{
-      "data" => %{
-        "categories" => [
-          %{"name" => "Beverages"},
-          %{"name" => "Sandwiches"},
-          %{"name" => "Sides"}
-        ]
-      }
-    }
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "categories" => [
+                 %{"name" => "Beverages"},
+                 %{"name" => "Sandwiches"},
+                 %{"name" => "Sides"}
+               ]
+             }
+           }
   end
 
-  @query"""
+  @query """
   query ($matcher: String!) {
     categories(matcher: $matcher) {
       name
@@ -38,16 +39,17 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemsTest do
   test "categories field filters by a name matcher" do
     conn = build_conn()
     conn = get(conn, "/api", query: @query, variables: @variables)
-    assert json_response(conn, 200) ==  %{
-      "data" => %{
-        "categories" => [
-          %{"name" => "Beverages"}
-        ]
-      }
-    }
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "categories" => [
+                 %{"name" => "Beverages"}
+               ]
+             }
+           }
   end
 
-  @query"""
+  @query """
   query ($order: SortOrder!) {
     categories(order: $order) {
       name
@@ -58,15 +60,15 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemsTest do
   test "categories field sorts by an order argument" do
     conn = build_conn()
     conn = get(conn, "/api", query: @query, variables: @variables)
-    assert json_response(conn, 200) ==  %{
-      "data" => %{
-        "categories" => [
-          %{"name" => "Sides"},
-          %{"name" => "Sandwiches"},
-          %{"name" => "Beverages"}
-        ]
-      }
-    }
-  end
 
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "categories" => [
+                 %{"name" => "Sides"},
+                 %{"name" => "Sandwiches"},
+                 %{"name" => "Beverages"}
+               ]
+             }
+           }
+  end
 end

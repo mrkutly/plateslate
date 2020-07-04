@@ -1,4 +1,3 @@
-
 defmodule PlateSlate do
   @moduledoc """
   PlateSlate keeps the contexts that define your domain
