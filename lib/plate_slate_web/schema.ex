@@ -13,6 +13,16 @@ defmodule PlateSlateWeb.Schema do
     end
   end
 
+  mutation do
+    import_fields(:menu_mutations)
+  end
+
+  @desc "An error encountered trying to persist input"
+  object :input_error do
+    field(:key, non_null(:string))
+    field(:message, non_null(:string))
+  end
+
   scalar :date do
     parse(fn input ->
       with %Input.String{value: value} <- input,
@@ -42,6 +52,18 @@ defmodule PlateSlateWeb.Schema do
     serialize(fn {username, domain} ->
       username <> "@" <> domain
     end)
+  end
+
+  scalar :decimal do
+    parse(fn
+      %{value: value}, _ ->
+        Decimal.parse(value)
+
+      _, _ ->
+        :error
+    end)
+
+    serialize(&to_string/1)
   end
 
   enum :sort_order do

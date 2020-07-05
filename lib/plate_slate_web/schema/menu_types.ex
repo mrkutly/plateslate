@@ -3,6 +3,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
   alias PlateSlateWeb.Resolvers
   alias PlateSlate.Menu.{Category, Item}
 
+  # Root query and mutation fields
   object :menu_queries do
     field :menu_items, list_of(:menu_item), description: "The list of available items on the menu" do
       arg(:filter, :menu_item_filter)
@@ -18,6 +19,14 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     end
   end
 
+  object :menu_mutations do
+    field :create_menu_item, :menu_item_result do
+      arg(:input, non_null(:menu_item_input))
+      resolve(&Resolvers.Menu.create_item/3)
+    end
+  end
+
+  # Inputs
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
     @desc "Added after a date"
@@ -42,6 +51,14 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     field(:tag, :string)
   end
 
+  input_object :menu_item_input do
+    field(:category_id, non_null(:id))
+    field(:description, :string)
+    field(:name, non_null(:string))
+    field(:price, non_null(:decimal))
+  end
+
+  # Types
   @desc "Represents an item on the menu"
   object :menu_item do
     interfaces([:search_result])
@@ -52,6 +69,13 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
 
     field(:description, :string)
     field(:name, non_null(:string))
+    field(:price, :decimal)
+  end
+
+  @desc "Result of a menu item mutation"
+  object :menu_item_result do
+    field(:menu_item, :menu_item)
+    field(:errors, list_of(:input_error))
   end
 
   @desc "Represents a category of items on the menu"
@@ -66,6 +90,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     end
   end
 
+  # Interfaces
   @desc "Interface a possible search result"
   interface :search_result do
     field(:name, non_null(:string))
