@@ -1,6 +1,5 @@
 defmodule PlateSlateWeb.Schema.Query.CategoriesTest do
   use PlateSlateWeb.ConnCase, async: true
-  alias PlateSlate.{Repo, Menu.Item, Menu.Category}
 
   setup do
     PlateSlate.Seeds.run()

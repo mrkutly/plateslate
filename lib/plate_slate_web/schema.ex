@@ -3,6 +3,7 @@ defmodule PlateSlateWeb.Schema do
   alias Absinthe.Blueprint.Input
   alias PlateSlateWeb.Resolvers
   import_types(__MODULE__.MenuTypes)
+  import_types(__MODULE__.OrderingTypes)
 
   query do
     import_fields(:menu_queries)
@@ -15,6 +16,11 @@ defmodule PlateSlateWeb.Schema do
 
   mutation do
     import_fields(:menu_mutations)
+    import_fields(:order_mutations)
+  end
+
+  subscription do
+    import_fields(:order_subscriptions)
   end
 
   @desc "An error encountered trying to persist input"
