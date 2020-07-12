@@ -34,6 +34,8 @@ defmodule PlateSlate.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:comeonin_ecto_password, "~> 2.1"},
+      {:pbkdf2_elixir, "~> 0.12.0"},
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
