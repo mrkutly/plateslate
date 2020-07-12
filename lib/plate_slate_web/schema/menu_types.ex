@@ -64,9 +64,8 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     interfaces([:search_result])
     field(:id, :id)
 
-    @desc "date the item was added to the menu"
+    field(:allergy_info, list_of(:allergy_info))
     field(:added_on, :date)
-
     field(:description, :string)
     field(:name, non_null(:string))
     field(:price, :decimal)
@@ -76,6 +75,11 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
   object :menu_item_result do
     field(:menu_item, :menu_item)
     field(:errors, list_of(:input_error))
+  end
+
+  object :allergy_info do
+    field(:allergen, :string)
+    field(:severity, :string)
   end
 
   @desc "Represents a category of items on the menu"
